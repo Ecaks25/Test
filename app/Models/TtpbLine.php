@@ -26,4 +26,20 @@ class TtpbLine extends Model
     {
         return $this->belongsTo(Ttpb::class);
     }
+
+    /**
+     * Get the item associated with the line.
+     */
+    public function item()
+    {
+        return $this->belongsTo(Item::class);
+    }
+
+    /**
+     * Get the lot associated with the line.
+     */
+    public function lot()
+    {
+        return $this->belongsTo(Lot::class);
+    }
 }

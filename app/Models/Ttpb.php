@@ -30,4 +30,20 @@ class Ttpb extends Model
     {
         return $this->hasMany(TtpbLine::class);
     }
+
+    /**
+     * Get the source location.
+     */
+    public function fromLocation()
+    {
+        return $this->belongsTo(Location::class, 'from_location_id');
+    }
+
+    /**
+     * Get the destination location.
+     */
+    public function toLocation()
+    {
+        return $this->belongsTo(Location::class, 'to_location_id');
+    }
 }
