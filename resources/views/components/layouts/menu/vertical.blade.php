@@ -6,27 +6,40 @@
 
   <div class="menu-inner-shadow"></div>
 
+  @php $menu = config('menu'); @endphp
   <ul class="menu-inner py-1">
-    <!-- Dashboards -->
-    <li class="menu-item {{ request()->is('dashboard') ? 'active' : '' }}">
-      <a class="menu-link" href="{{ route('dashboard') }}" wire:navigate>{{ __('Dashboard') }}</a>
-    </li>
-
-    <!-- Settings -->
-    <li class="menu-item {{ request()->is('settings/*') ? 'active open' : '' }}">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bx-cog"></i>
-        <div class="text-truncate">{{ __('Settings') }}</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item {{ request()->routeIs('settings.profile') ? 'active' : '' }}">
-          <a class="menu-link" href="{{ route('settings.profile') }}" wire:navigate>{{ __('Profile') }}</a>
+    @foreach ($menu as $group)
+      @php
+        $hasChildren = isset($group['children']);
+        $groupActive = $hasChildren ? collect($group['children'])->contains(fn ($item) => request()->routeIs($item['active'])) : request()->routeIs($group['active'] ?? '');
+      @endphp
+      @if (!isset($group['roles']) || (auth()->check() && auth()->user()->hasAnyRole($group['roles'])))
+        <li class="menu-item {{ $groupActive ? 'active open' : '' }}">
+          @if ($hasChildren)
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+              @isset($group['icon'])<i class="menu-icon tf-icons {{ $group['icon'] }}"></i>@endisset
+              <div class="text-truncate">{{ __($group['label']) }}</div>
+            </a>
+            <ul class="menu-sub">
+              @foreach ($group['children'] as $item)
+                @if (!isset($item['roles']) || (auth()->check() && auth()->user()->hasAnyRole($item['roles'])))
+                  <li class="menu-item {{ request()->routeIs($item['active']) ? 'active' : '' }}">
+                    @php $url = Route::has($item['route']) ? route($item['route'], $item['params'] ?? []) : '#'; @endphp
+                    <a class="menu-link" href="{{ $url }}" wire:navigate>{{ __($item['label']) }}</a>
+                  </li>
+                @endif
+              @endforeach
+            </ul>
+          @else
+            @php $url = Route::has($group['route']) ? route($group['route']) : '#'; @endphp
+            <a class="menu-link" href="{{ $url }}" wire:navigate>
+              @isset($group['icon'])<i class="menu-icon tf-icons {{ $group['icon'] }}"></i>@endisset
+              <div class="text-truncate">{{ __($group['label']) }}</div>
+            </a>
+          @endif
         </li>
-        <li class="menu-item {{ request()->routeIs('settings.password') ? 'active' : '' }}">
-          <a class="menu-link" href="{{ route('settings.password') }}" wire:navigate>{{ __('Password') }}</a>
-        </li>
-      </ul>
-    </li>
+      @endif
+    @endforeach
   </ul>
 </aside>
 <!-- / Menu -->
