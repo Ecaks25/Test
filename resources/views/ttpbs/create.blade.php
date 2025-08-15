@@ -12,8 +12,8 @@
         </div>
         <div class="mb-3">
             <label class="form-label">{{ __('From Location') }}</label>
-            <input type="text" class="form-control" value="{{ $fromLocation->name ?? $fromLocation->id }}" readonly>
-            <input type="hidden" name="from_location_id" value="{{ $fromLocation->id }}">
+            <input type="text" class="form-control" value="{{ optional($fromLocation)->name ?? optional($fromLocation)->id ?? '' }}" readonly>
+            <input type="hidden" name="from_location_id" value="{{ optional($fromLocation)->id }}">
         </div>
         <div class="mb-3">
             <label class="form-label">{{ __('To Location') }}</label>
