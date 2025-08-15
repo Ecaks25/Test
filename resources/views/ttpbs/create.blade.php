@@ -4,7 +4,7 @@
         @csrf
         <div class="mb-3">
             <label class="form-label">{{ __('Number') }}</label>
-            <input type="text" name="number" class="form-control" required>
+            <input type="text" class="form-control" value="{{ __('Auto') }}" readonly>
         </div>
         <div class="mb-3">
             <label class="form-label">{{ __('Date') }}</label>
@@ -12,11 +12,8 @@
         </div>
         <div class="mb-3">
             <label class="form-label">{{ __('From Location') }}</label>
-            <select name="from_location_id" class="form-select" required>
-                @foreach($locations as $loc)
-                    <option value="{{ $loc->id }}">{{ $loc->name ?? $loc->id }}</option>
-                @endforeach
-            </select>
+            <input type="text" class="form-control" value="{{ $fromLocation->name ?? $fromLocation->id }}" readonly>
+            <input type="hidden" name="from_location_id" value="{{ $fromLocation->id }}">
         </div>
         <div class="mb-3">
             <label class="form-label">{{ __('To Location') }}</label>
@@ -42,7 +39,32 @@
                     </select>
                 </div>
                 <div class="col">
-                    <input type="number" step="0.001" name="lines[0][qty_requested]" class="form-control" placeholder="{{ __('Qty Requested') }}">
+                    <select name="lines[0][lot_id]" class="form-select" required>
+                        @foreach($lots as $lot)
+                            <option value="{{ $lot->id }}">{{ $lot->lot_number ?? $lot->id }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col">
+                    <input type="number" step="0.001" name="lines[0][qty_requested]" class="form-control qty-requested" placeholder="{{ __('Qty Awal') }}">
+                </div>
+                <div class="col">
+                    <input type="number" step="0.001" name="lines[0][qty_actual]" class="form-control qty-actual" placeholder="{{ __('Qty Aktual') }}">
+                </div>
+                <div class="col">
+                    <input type="number" step="0.001" name="lines[0][loss_qty]" class="form-control loss-qty" placeholder="{{ __('Loss') }}" readonly>
+                </div>
+                <div class="col">
+                    <input type="number" step="0.01" name="lines[0][loss_percent]" class="form-control loss-percent" placeholder="%" readonly>
+                </div>
+                <div class="col">
+                    <input type="number" name="lines[0][coly]" class="form-control" placeholder="{{ __('Coly') }}">
+                </div>
+                <div class="col">
+                    <input type="text" name="lines[0][spec]" class="form-control" placeholder="{{ __('Spec') }}">
+                </div>
+                <div class="col">
+                    <input type="text" name="lines[0][remarks]" class="form-control" placeholder="{{ __('Remarks') }}">
                 </div>
             </div>
         </div>
@@ -52,18 +74,33 @@
         </div>
     </form>
 
-    <script>
-        document.getElementById('add-line').addEventListener('click', function() {
-            const container = document.getElementById('lines');
-            const index = container.querySelectorAll('.line').length;
-            const template = container.querySelector('.line').cloneNode(true);
-            template.querySelectorAll('select, input').forEach(function(el) {
-                el.name = el.name.replace(/lines\[\d+\]/, 'lines[' + index + ']');
-                if (el.tagName === 'INPUT') {
-                    el.value = '';
+        <script>
+            document.getElementById('add-line').addEventListener('click', function() {
+                const container = document.getElementById('lines');
+                const index = container.querySelectorAll('.line').length;
+                const template = container.querySelector('.line').cloneNode(true);
+                template.querySelectorAll('select, input').forEach(function(el) {
+                    el.name = el.name.replace(/lines\[\d+\]/, 'lines[' + index + ']');
+                    if (el.tagName === 'INPUT') {
+                        el.value = '';
+                    }
+                });
+                container.appendChild(template);
+            });
+
+            function recalc(line) {
+                const qtyReq = parseFloat(line.querySelector('.qty-requested').value) || 0;
+                const qtyAct = parseFloat(line.querySelector('.qty-actual').value) || 0;
+                const loss = qtyReq - qtyAct;
+                const lossPercent = qtyReq ? (loss / qtyReq) * 100 : 0;
+                line.querySelector('.loss-qty').value = loss.toFixed(3);
+                line.querySelector('.loss-percent').value = lossPercent.toFixed(2);
+            }
+
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('qty-requested') || e.target.classList.contains('qty-actual')) {
+                    recalc(e.target.closest('.line'));
                 }
             });
-            container.appendChild(template);
-        });
-    </script>
+        </script>
 </x-layouts.app>
