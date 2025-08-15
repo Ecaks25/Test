@@ -43,7 +43,7 @@
 
     <div class="mb-4">
         <a href="{{ route('bpgs.create') }}" class="btn btn-primary me-2">{{ __('Input BPG') }}</a>
-        <a href="{{ route('ttpbs.create') }}" class="btn btn-outline-primary me-2">{{ __('Buat TTPB') }}</a>
+        <a href="{{ route('ttpb.create') }}" class="btn btn-outline-primary me-2">{{ __('Buat TTPB') }}</a>
         <a href="#" class="btn btn-outline-primary">{{ __('Batch Mixing') }}</a>
     </div>
 

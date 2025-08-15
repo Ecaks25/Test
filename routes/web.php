@@ -34,7 +34,7 @@ Route::middleware(['auth'])->group(function () {
   Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
   Volt::route('settings/password', 'settings.password')->name('settings.password');
 
-  Route::resource('ttpbs', TtpbController::class);
+  Route::resource('ttpb', TtpbController::class);
 });
 
 require __DIR__ . '/auth.php';

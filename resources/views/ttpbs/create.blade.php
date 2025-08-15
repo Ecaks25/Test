@@ -1,6 +1,6 @@
 @section('title', __('Create TTPB'))
 <x-layouts.app :title="__('Create TTPB')">
-    <form method="POST" action="{{ route('ttpbs.store') }}">
+    <form method="POST" action="{{ route('ttpb.store') }}">
         @csrf
         <div class="mb-3">
             <label class="form-label">{{ __('Number') }}</label>
