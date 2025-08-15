@@ -18,8 +18,8 @@ return [
             ],
             [
                 'label' => 'BPG – Input',
-                'route' => 'gudang.bpg.create',
-                'active' => 'gudang.bpg.*',
+                'route' => 'bpgs.create',
+                'active' => 'bpgs.*',
             ],
             [
                 'label' => 'TTPB – Daftar',
