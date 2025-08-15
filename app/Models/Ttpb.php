@@ -22,4 +22,12 @@ class Ttpb extends Model
         'date' => 'date',
         'posted_at' => 'datetime',
     ];
+
+    /**
+     * Get the lines associated with the TTPB.
+     */
+    public function lines()
+    {
+        return $this->hasMany(TtpbLine::class);
+    }
 }
