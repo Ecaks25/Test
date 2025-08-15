@@ -18,4 +18,12 @@ class TtpbLine extends Model
         'spec',
         'remarks',
     ];
+
+    /**
+     * Get the TTPB that owns the line.
+     */
+    public function ttpb()
+    {
+        return $this->belongsTo(Ttpb::class);
+    }
 }
