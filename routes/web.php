@@ -12,6 +12,18 @@ Route::view('dashboard', 'dashboard')
   ->middleware(['auth', 'verified'])
   ->name('dashboard');
 
+Route::view('monitoring', 'monitoring')
+  ->middleware(['auth', 'verified'])
+  ->name('monitoring');
+
+Route::view('bpgs', 'bpgs.index')
+  ->middleware(['auth', 'verified'])
+  ->name('bpgs.index');
+
+Route::view('bpgs/create', 'bpgs.create')
+  ->middleware(['auth', 'verified'])
+  ->name('bpgs.create');
+
 Route::middleware(['auth'])->group(function () {
   Route::redirect('settings', 'settings/profile');
 
