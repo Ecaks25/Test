@@ -16,6 +16,10 @@ Route::view('monitoring', 'monitoring')
   ->middleware(['auth', 'verified'])
   ->name('monitoring');
 
+Route::view('stock', 'stock.index')
+  ->middleware(['auth', 'verified'])
+  ->name('gudang.stock.index');
+
 Route::view('bpgs', 'bpgs.index')
   ->middleware(['auth', 'verified'])
   ->name('bpgs.index');
