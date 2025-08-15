@@ -53,8 +53,10 @@ class TtpbController extends Controller
     {
         $items = Item::all();
         $locations = Location::all();
+        $lots = Lot::all();
+        $fromLocation = Location::where('name', 'Gudang')->first() ?? Location::first();
 
-        return view('ttpbs.create', compact('items', 'locations'));
+        return view('ttpbs.create', compact('items', 'locations', 'lots', 'fromLocation'));
     }
 
     /**
@@ -63,7 +65,6 @@ class TtpbController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'number' => ['required', 'string', 'max:255'],
             'date' => ['required', 'date'],
             'from_location_id' => ['required', 'integer'],
             'to_location_id' => ['required', 'integer'],
@@ -72,21 +73,27 @@ class TtpbController extends Controller
 
         $lines = $request->input('lines', []);
 
+        $data['number'] = 'TTPB-' . str_pad((Ttpb::max('id') + 1), 5, '0', STR_PAD_LEFT);
         $data['created_by'] = $request->user()->id ?? 1;
         $ttpb = Ttpb::create($data);
 
         foreach ($lines as $line) {
-            if (empty($line['item_id']) || empty($line['qty_requested'])) {
+            if (empty($line['item_id']) || empty($line['lot_id']) || !isset($line['qty_requested']) || !isset($line['qty_actual'])) {
                 continue;
             }
 
+            $qtyRequested = (float) $line['qty_requested'];
+            $qtyActual = (float) $line['qty_actual'];
+            $lossQty = $qtyRequested - $qtyActual;
+            $lossPercent = $qtyRequested > 0 ? ($lossQty / $qtyRequested) * 100 : 0;
+
             $ttpb->lines()->create([
                 'item_id' => $line['item_id'],
-                'lot_id' => $line['lot_id'] ?? null,
-                'qty_requested' => $line['qty_requested'],
-                'qty_actual' => $line['qty_actual'] ?? 0,
-                'loss_qty' => $line['loss_qty'] ?? 0,
-                'loss_percent' => $line['loss_percent'] ?? 0,
+                'lot_id' => $line['lot_id'],
+                'qty_requested' => $qtyRequested,
+                'qty_actual' => $qtyActual,
+                'loss_qty' => $lossQty,
+                'loss_percent' => $lossPercent,
                 'coly' => $line['coly'] ?? null,
                 'spec' => $line['spec'] ?? null,
                 'remarks' => $line['remarks'] ?? null,
