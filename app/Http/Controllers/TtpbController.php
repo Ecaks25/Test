@@ -74,7 +74,7 @@ class TtpbController extends Controller
         $lines = $request->input('lines', []);
 
         $data['number'] = 'TTPB-' . str_pad((Ttpb::max('id') + 1), 5, '0', STR_PAD_LEFT);
-        $data['created_by'] = $request->user()->id ?? 1;
+        $data['created_by'] = $request->user()?->id ?? 1;
         $ttpb = Ttpb::create($data);
 
         foreach ($lines as $line) {
@@ -100,7 +100,7 @@ class TtpbController extends Controller
             ]);
         }
 
-        return redirect()->route('ttpbs.index');
+        return redirect()->route('ttpb.index');
     }
 
     /**
