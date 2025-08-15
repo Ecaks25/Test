@@ -68,7 +68,6 @@ class TtpbController extends Controller
             'date' => ['required', 'date'],
             'from_location_id' => ['required', 'integer'],
             'to_location_id' => ['required', 'integer'],
-            'notes' => ['nullable', 'string'],
         ]);
 
         $lines = $request->input('lines', []);
