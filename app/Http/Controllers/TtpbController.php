@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use App\Models\Location;
+use App\Models\Lot;
 use App\Models\Ttpb;
 use Illuminate\Http\Request;
 
@@ -12,11 +13,37 @@ class TtpbController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $ttpbs = Ttpb::with('lines')->latest()->get();
+        $query = Ttpb::with(['fromLocation', 'toLocation', 'lines.item', 'lines.lot'])->latest();
 
-        return view('ttpbs.index', compact('ttpbs'));
+        if ($request->filled('date')) {
+            $query->whereDate('date', $request->date);
+        }
+
+        if ($request->filled('to_location_id')) {
+            $query->where('to_location_id', $request->to_location_id);
+        }
+
+        if ($request->filled('item_id')) {
+            $query->whereHas('lines', function ($q) use ($request) {
+                $q->where('item_id', $request->item_id);
+            });
+        }
+
+        if ($request->filled('lot_id')) {
+            $query->whereHas('lines', function ($q) use ($request) {
+                $q->where('lot_id', $request->lot_id);
+            });
+        }
+
+        $ttpbs = $query->get();
+
+        $items = Item::all();
+        $locations = Location::all();
+        $lots = Lot::all();
+
+        return view('ttpbs.index', compact('ttpbs', 'items', 'locations', 'lots'));
     }
 
     /**
