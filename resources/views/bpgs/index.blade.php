@@ -11,12 +11,12 @@
                 <th>{{ __('Supplier') }}</th>
                 <th>{{ __('Nomor Mobil') }}</th>
                 <th>{{ __('Lot Number') }}</th>
-                <th>{{ __('Item') }}</th>
+                <th>{{ __('Nama Barang') }}</th>
                 <th>{{ __('QTY (kg)') }}</th>
                 <th>{{ __('QTY Aktual') }}</th>
                 <th>{{ __('Loss') }}</th>
                 <th>{{ __('Coly') }}</th>
-                <th>{{ __('Diterima oleh') }}</th>
+                <th>{{ __('Diterima Oleh') }}</th>
                 <th>{{ __('Status') }}</th>
                 <th>{{ __('Aksi') }}</th>
             </tr>
