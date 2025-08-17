@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\TtpbController;
+use App\Http\Controllers\MonitoringController;
 
 Route::get('/', function () {
   return view('welcome');
@@ -15,6 +16,10 @@ Route::view('dashboard', 'dashboard')
 Route::view('monitoring', 'monitoring')
   ->middleware(['auth', 'verified'])
   ->name('monitoring');
+
+Route::get('monitoring/export', [MonitoringController::class, 'export'])
+  ->middleware(['auth', 'verified'])
+  ->name('monitoring.export');
 
 Route::view('stock', 'stock.index')
   ->middleware(['auth', 'verified'])

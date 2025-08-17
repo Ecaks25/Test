@@ -69,7 +69,7 @@
                 </tbody>
             </table>
             <div class="d-flex justify-content-end gap-2">
-                <button class="btn btn-outline-secondary">{{ __('Export Excel') }}</button>
+                <a href="{{ route('monitoring.export') }}" class="btn btn-outline-secondary">{{ __('Export Excel') }}</a>
                 <button class="btn btn-outline-secondary">{{ __('Export PDF') }}</button>
             </div>
         </div>
